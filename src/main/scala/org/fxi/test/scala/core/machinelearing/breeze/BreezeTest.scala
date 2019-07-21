@@ -16,7 +16,7 @@ class BreezeTest extends FunSuite{
 //    p += plot(x, x :^ 2.0)
 //    p += plot(x, x :^ 3.0, '.')
 //    p += plot(x, x :^ 4.0, '+')
-    p += plot(x, 1.0 /:/ (1.0 :+ 1.0 ^:^  -x), '-')
+    p += plot(x, 1.0 :/ (1.0 :+ 1.0 :^  -x), '-')
     p.xlabel = "x axis"
     p.ylabel = "y axis"
     val p2 = f.subplot(2,1,1)
@@ -46,7 +46,7 @@ class BreezeTest extends FunSuite{
     println(m)
     println(sum(m))
     println(m+m)
-    println(m *:* m)
+    println(m :* m)
     println(m:+=1)
   }
 }

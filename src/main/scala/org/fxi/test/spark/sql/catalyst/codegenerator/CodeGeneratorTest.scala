@@ -13,7 +13,8 @@ object CodeGeneratorTest {
     println(cleanedSource.body)
     val clazz = CodeGenerator.compile(cleanedSource)
     println(clazz.getClass)
-    val buffer = clazz.generate(Array(1,2,3,4)).asInstanceOf[BufferedRowIterator]
+
+    val buffer =clazz._1.generate(Array(1,2,3,4)).asInstanceOf[BufferedRowIterator]
     buffer.init(1,Array(Iterator(InternalRow.empty,InternalRow.empty,InternalRow.empty)))
     buffer.hasNext()
   }

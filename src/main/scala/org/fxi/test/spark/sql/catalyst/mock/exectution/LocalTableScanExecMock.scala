@@ -28,7 +28,7 @@ case class LocalTableScanExecMock() extends SparkPlanMock  with CodegenSupportMo
     LogUtil.doLog("＝＝＝＝LocalTableScanExecMock　doProduce　 生成执行代码＝＝＝＝＝＝＝＝＝＝＝＝开始＝＝＝＝＝＝＝＝＝＝",this.getClass)
     val input = ctx.freshName("input")
     // Right now, InputAdapter is only used when there is one input RDD.
-    ctx.addMutableState("scala.collection.Iterator", input, s"$input = inputs[0];")
+    ctx.addMutableState("scala.collection.Iterator", input, x => s"$input = inputs[0];")
     val row = ctx.freshName("row")
     LogUtil.doLog("＝＝＝＝LocalTableScanExecMock　doProduce　 生成执行代码＝＝＝＝＝＝＝＝＝＝＝＝结束＝＝＝＝＝＝＝＝＝＝",this.getClass)
 

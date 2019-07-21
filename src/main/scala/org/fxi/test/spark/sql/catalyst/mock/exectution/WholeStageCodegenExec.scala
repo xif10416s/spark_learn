@@ -93,7 +93,7 @@ trait CodegenSupportMock extends SparkPlanMock {
     * them to be evaluated twice.
     */
   protected def evaluateVariables(variables: Seq[ExprCode]): String = {
-    val evaluate = variables.filter(_.code != "").map(_.code.trim).mkString("\n")
+    val evaluate = variables.filter(_.code != "").map(_.code).mkString("\n")
 //    variables.foreach(_.code = "")
     evaluate
   }
@@ -109,7 +109,7 @@ trait CodegenSupportMock extends SparkPlanMock {
     val evaluateVars = new StringBuilder
     variables.zipWithIndex.foreach { case (ev, i) =>
       if (ev.code != "" && required.contains(attributes(i))) {
-        evaluateVars.append(ev.code.trim + "\n")
+        evaluateVars.append(ev.code + "\n")
 //        ev.code = ""
       }
     }
@@ -227,7 +227,7 @@ case class WholeStageCodegenExecMock (child: SparkPlanMock) extends SparkPlanMoc
 
   override def doConsume(ctx: CodegenContext, input: Seq[ExprCode], row: ExprCode): String = {
     LogUtil.doLog("＝＝＝＝WholeStageCodegenExecMock　doConsume　 生成执行代码＝＝＝＝＝＝＝＝＝＝＝＝开始＝＝＝＝＝＝＝＝＝＝",this.getClass)
-    val doCopy = if (ctx.copyResult) {
+    val doCopy = if (true) {
       ".copy()"
     } else {
       ""

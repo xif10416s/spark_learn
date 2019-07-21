@@ -12,7 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spark.version>2.2.0</spark.version>
+        <spark.version>2.4.2</spark.version>
         <scala.version>2.11.8</scala.version>
         <kafka_version>0.8.2-beta</kafka_version>
         <scala.binary.version>2.11</scala.binary.version>
@@ -129,6 +129,12 @@
             <groupId>cc.factorie</groupId>
             <artifactId>factorie_${scala.binary.version}</artifactId>
             <version>1.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.json4s</groupId>
+                    <artifactId>json4s-jackson_2.11</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.scalanlp</groupId>
@@ -158,6 +164,31 @@
             <artifactId>mmlspark</artifactId>
             <version>0.14</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.delta</groupId>
+            <artifactId>delta-core_${scala.binary.version}</artifactId>
+            <version>0.2.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.json4s/json4s-core -->
+        <dependency>
+            <groupId>org.json4s</groupId>
+            <artifactId>json4s-core_${scala.binary.version}</artifactId>
+            <version>3.5.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.json4s/json4s-core -->
+        <dependency>
+            <groupId>org.json4s</groupId>
+            <artifactId>json4s-core_${scala.binary.version}</artifactId>
+            <version>3.5.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.json4s/json4s-ast -->
+        <dependency>
+            <groupId>org.json4s</groupId>
+            <artifactId>json4s-ast_${scala.binary.version}</artifactId>
+            <version>3.5.3</version>
+        </dependency>
+
     </dependencies>
 
     <build>
