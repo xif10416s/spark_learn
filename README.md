@@ -29,6 +29,13 @@
     *   git自定义时序模型
 *   spark/ml/mmlspark
     *   微软机器学习库Azure
-    
-    
+*   spark/core/mock/communication  -- spark 通信模块
+    *   network -- 模拟实现netty封装 , 省略了一些netty 通讯参数的配置
+        *   只模拟了RPC调用场景
+        *   TODO流处理，数据拉取
+    *   test -- 测试启动类目录
+        *   test.network 模拟 NettyRpcEnv使用TransportContext，创建netty server , netty client 相互通讯
+            *   客户端连接服务器发送一条消息，服务端接收消息，并响应客户端 
+            *   没有Dispatch相关逻辑，忽略了数据传输的格式，直接最简单的消息
+            *   基础的调用流程，通讯流程
     
