@@ -104,6 +104,7 @@ public class TransportChannelHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object request) throws Exception {
+    logger.trace("TransportChannelHandler on channelRead .....");
     if (request instanceof RequestMessage) {
       requestHandler.handle((RequestMessage) request);
     } else if (request instanceof ResponseMessage) {

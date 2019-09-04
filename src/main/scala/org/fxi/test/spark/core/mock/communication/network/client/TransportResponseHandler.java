@@ -152,6 +152,7 @@ public class TransportResponseHandler extends MessageHandler<ResponseMessage> {
 
   @Override
   public void handle(ResponseMessage message) throws Exception {
+    logger.trace("TransportResponseHandler handle RpcResponse ....");
     if (message instanceof ChunkFetchSuccess) {
       ChunkFetchSuccess resp = (ChunkFetchSuccess) message;
       ChunkReceivedCallback listener = outstandingFetches.get(resp.streamChunkId);

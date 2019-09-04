@@ -9,15 +9,17 @@ import java.util.Map
 import org.apache.spark.network.util.{ConfigProvider, TransportConf}
 import org.fxi.test.spark.core.mock.communication.ByteBufferInputStream
 import org.fxi.test.spark.core.mock.communication.network.TransportContext
-import org.fxi.test.spark.core.mock.communication.network.client.RpcResponseCallback
+import org.fxi.test.spark.core.mock.communication.network.client.{RpcResponseCallback, TransportClient}
+import org.slf4j.{Logger, LoggerFactory}
 
 /**
   * 模拟netty server
   * 参考NettyRpcEnv 简单实现
   */
 object NetworkClientTest {
+  private val logger = LoggerFactory.getLogger(classOf[TransportClient])
 
-    // 初始化conf
+  // 初始化conf
     val conf = new TransportConf("Test_server_main", new ConfigProvider() {
         override def get(name: String): String = {
             ""
@@ -49,12 +51,13 @@ object NetworkClientTest {
               * rpc成功回调函数
               */
             override def onSuccess(response: ByteBuffer): Unit = {
+                logger.trace("RpcResponseCallback call onSuccess  start.......")
                 val bis = new ByteBufferInputStream(response)
                 val in = new DataInputStream(bis)
 
                 val str = in.readUTF()
                 println(s"receive from  : " +  client.getSocketAddress + "    " + str )
-                println("--------------------- call server onSuccess ....")
+                logger.trace(" RpcResponseCallback call server onSuccess finish....")
             }
 
             /** rpc异常回调函数 */

@@ -42,7 +42,7 @@ public class TransportClient implements Closeable {
      * @return The RPC's id.
      */
     public long sendRpc(ByteBuffer message, RpcResponseCallback callback) {
-        logger.trace("Sending RPC to {}", getRemoteAddress(channel));
+        logger.trace(TransportClient.class + " Sending RPC to {}", getRemoteAddress(channel));
         long requestId = requestId();
         handler.addRpcRequest(requestId, callback);
 
