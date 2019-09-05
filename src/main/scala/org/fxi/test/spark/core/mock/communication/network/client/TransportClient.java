@@ -2,9 +2,12 @@ package org.fxi.test.spark.core.mock.communication.network.client;
 
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.spark.network.buffer.NioManagedBuffer;
 
 
+import org.apache.spark.network.protocol.OneWayMessage;
 import org.apache.spark.network.protocol.RpcRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,14 @@ public class TransportClient implements Closeable {
         channel.close().awaitUninterruptibly(10, TimeUnit.SECONDS);
     }
 
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public void removeRpcRequest(long requestId) {
+        handler.removeRpcRequest(requestId);
+    }
+
     /**
      * Sends an opaque message to the RpcHandler on the server-side. The callback will be invoked
      * with the server's response or upon any failure.
@@ -46,8 +57,8 @@ public class TransportClient implements Closeable {
         long requestId = requestId();
         handler.addRpcRequest(requestId, callback);
 
-        // 省略了 监听 成功 和 异常的 处理 , RpcResponseCallback
-        channel.writeAndFlush(new RpcRequest(requestId, new NioManagedBuffer(message)));
+
+        channel.writeAndFlush(new RpcRequest(requestId, new NioManagedBuffer(message))).addListener(new ChannelListener(requestId));
 
         return requestId;
     }
@@ -59,4 +70,29 @@ public class TransportClient implements Closeable {
     private static long requestId() {
         return Math.abs(UUID.randomUUID().getLeastSignificantBits());
     }
+
+    public void send(ByteBuffer message) {
+        channel.writeAndFlush(new OneWayMessage(new NioManagedBuffer(message)));
+    }
+
+    /**
+     * 监听channel writeAndFlush成功事件
+     */
+    class ChannelListener implements GenericFutureListener<Future<? super Void>> {
+        final long startTime;
+        final Object requestId;
+
+        ChannelListener(Object requestId) {
+            this.startTime = System.currentTimeMillis();
+            this.requestId = requestId;
+        }
+        @Override
+        public void operationComplete(Future<? super Void> future) throws Exception {
+            if (future.isSuccess()) {
+                long timeTaken = System.currentTimeMillis() - startTime;
+                logger.info("TransportClient.sendRpc cost time : " + timeTaken);
+            }
+        }
+    }
 }
+

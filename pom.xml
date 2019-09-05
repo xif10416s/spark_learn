@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spark.version>2.4.2</spark.version>
-        <scala.version>2.11.8</scala.version>
+        <scala.version>2.11.12</scala.version>
         <kafka_version>0.8.2-beta</kafka_version>
         <scala.binary.version>2.11</scala.binary.version>
         <kafka_version>0.8.2-beta</kafka_version>

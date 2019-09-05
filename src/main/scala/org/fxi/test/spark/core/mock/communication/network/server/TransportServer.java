@@ -52,7 +52,7 @@ public class TransportServer implements Closeable {
         this.context = context;
         this.moduleName = context.getConf().getModuleName();
         this.appRpcHandler = appRpcHandler;
-        this.bootstraps = Lists.newArrayList(Preconditions.checkNotNull(bootstraps));
+        this.bootstraps = bootstraps;
 
         boolean shouldClose = true;
         try {
@@ -107,7 +107,6 @@ public class TransportServer implements Closeable {
 
         port = ((InetSocketAddress) channelFuture.channel().localAddress()).getPort();
         logger.debug("Shuffle server started on port: {}", port);
-        channelFuture.channel().closeFuture().syncUninterruptibly();
     }
 
 

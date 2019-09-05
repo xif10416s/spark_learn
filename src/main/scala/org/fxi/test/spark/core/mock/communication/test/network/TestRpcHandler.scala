@@ -1,11 +1,9 @@
 package org.fxi.test.spark.core.mock.communication.test.network
 
-import java.io.{ByteArrayOutputStream, DataInputStream, DataOutputStream, ObjectInputStream}
+import java.io.{ByteArrayOutputStream, DataInputStream, DataOutputStream}
 import java.nio.ByteBuffer
 
-import org.apache.spark.rpc.RpcAddress
-import org.apache.spark.util.ByteBufferInputStream
-import org.fxi.test.spark.core.mock.communication.{ByteBufferInputStream, JavaDeserializationStream}
+import org.fxi.test.spark.core.mock.communication.ByteBufferInputStream
 import org.fxi.test.spark.core.mock.communication.network.client.{RpcResponseCallback, TransportClient}
 import org.fxi.test.spark.core.mock.communication.network.server.RpcHandler
 import org.slf4j.LoggerFactory

@@ -33,9 +33,17 @@
     *   network -- 模拟实现netty封装 , 省略了一些netty 通讯参数的配置
         *   只模拟了RPC调用场景
         *   TODO流处理，数据拉取
+    *   core -- spark 在network实现上的封装
     *   test -- 测试启动类目录
         *   test.network 模拟 NettyRpcEnv使用TransportContext，创建netty server , netty client 相互通讯
             *   客户端连接服务器发送一条消息，服务端接收消息，并响应客户端 
             *   没有Dispatch相关逻辑，忽略了数据传输的格式，直接最简单的消息
             *   基础的调用流程，通讯流程
+        *   test.core 测试core的模拟代码，模拟nettyRpcEnv的使用
+            *   模拟driver注册到master的过程
+            *   TestMaster: 模拟Master启动NettyServer,实现了ThreadSafeRpcEndpoint的receive接口，处理driver发送的注册消息
+            *   TestDriver：模拟Driver端，通过ClientEndpointMock给master发送注册消息，并接收master发送的注册成功信息
+                *   driver 发送的注册消息 和 master发送的注册完成消息都时单向的消息。
+    *   TODO 其他endpoint逻辑
+
     

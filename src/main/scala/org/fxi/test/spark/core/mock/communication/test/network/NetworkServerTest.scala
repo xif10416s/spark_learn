@@ -2,11 +2,13 @@ package org.fxi.test.spark.core.mock.communication.test.network
 
 import java.lang
 import java.util.Map
+import java.util.concurrent.TimeUnit
 
 import org.apache.spark.network.util.ConfigProvider
 import org.apache.spark.network.util.TransportConf
 import org.fxi.test.spark.core.mock.communication.network.TransportContext
 import org.fxi.test.spark.core.mock.communication.network.server.TransportServerBootstrap
+import org.fxi.test.spark.core.mock.communication.util.ThreadUtils
 
 /**
   * 模拟netty server
@@ -34,5 +36,7 @@ object NetworkServerTest {
         // 一些权限认证等预处理，此处省略
         val bootstraps: java.util.List[TransportServerBootstrap] = java.util.Collections.emptyList()
         val server = context.createServer(8787,bootstraps)
+
+        ThreadUtils.newDaemonFixedThreadPool(1, "server").awaitTermination(Long.MaxValue, TimeUnit.MILLISECONDS)
     }
 }
