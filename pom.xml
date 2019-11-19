@@ -17,6 +17,7 @@
         <kafka_version>0.8.2-beta</kafka_version>
         <scala.binary.version>2.11</scala.binary.version>
         <kafka_version>0.8.2-beta</kafka_version>
+        <postgresql.version>42.2.5</postgresql.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -188,7 +189,17 @@
             <artifactId>json4s-ast_${scala.binary.version}</artifactId>
             <version>3.5.3</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>9.4.22.v20191022</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

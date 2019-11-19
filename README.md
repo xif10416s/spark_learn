@@ -45,5 +45,14 @@
             *   TestDriver：模拟Driver端，通过ClientEndpointMock给master发送注册消息，并接收master发送的注册成功信息
                 *   driver 发送的注册消息 和 master发送的注册完成消息都时单向的消息。
     *   TODO 其他endpoint逻辑
-
+*   spark/sql
+    *   sources/v2 -- 数据源接口v1扩展（https://www.iteblog.com/archives/2579.html）  
+        *   reader
+            *   支持功能接口
+                *   SupportsPushDownFilters -- 支持谓词下推过滤
+                *   SupportsPushDownRequiredColumns -- 列裁剪
+                *   SupportsReportPartitioning -- 上报数据分区
+                *   SupportsReportStatistics -- 上报统计数据
+                *   SupportsScanColumnarBatch -- 批量列扫描
+            *   
     
