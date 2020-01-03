@@ -54,5 +54,7 @@
                 *   SupportsReportPartitioning -- 上报数据分区
                 *   SupportsReportStatistics -- 上报统计数据
                 *   SupportsScanColumnarBatch -- 批量列扫描
-            *   
+*   deeplearn/bigdl  深度学习bigdl库
+    *   Intel开源了基于Apache Spark的分布式深度学习框架BigDL
+    *   examples/lenet  基于MNIST数据集的数字识别
     
