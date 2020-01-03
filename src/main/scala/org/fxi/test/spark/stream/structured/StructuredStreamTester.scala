@@ -2,10 +2,10 @@ package org.fxi.test.spark.stream.structured
 
 import java.sql.Timestamp
 
+import org.apache.spark.sql.functions.{udf, _}
 import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.{ForeachWriter, Row, SparkSession}
 import org.scalatest.FunSuite
-import org.apache.spark.sql.functions._
-import org.apache.spark.sql.{Row, ForeachWriter, SparkSession}
 
 /**
   * Created by xifei on 16-10-12.
@@ -17,7 +17,7 @@ import org.apache.spark.sql.{Row, ForeachWriter, SparkSession}
 class StructuredStreamTester extends FunSuite {
 
 
-  test("StructuredNetworkWordCount") {
+  test("Socket") {
 
     val spark = SparkSession
       .builder
@@ -36,17 +36,54 @@ class StructuredStreamTester extends FunSuite {
 
     lines.isStreaming
 
-    lines.printSchema()
 
     // Split the lines into words
-    val words = lines.as[String].flatMap(_.split(" "))
-    // Generate running word count
-    val wordCounts = words.groupBy("value").count()
+    val newCol = () => {
+      val t = new Timestamp(System.currentTimeMillis())
+      println(t)
+      t
+    }
+    val addCol = udf(newCol)
+    val words = lines.as[String].flatMap(_.split(" ")).withColumn("time", addCol())
+    words.printSchema()
+    // 没有聚合操作，必须append
+//    val query = words.writeStream.foreach(
+//      new ForeachWriter[Row] {
+//        override def open(partitionId: Long, epochId: Long): Boolean = {
+//          true
+//        }
+//
+//
+//        override def process(value: Row): Unit = {
+//          println(value)
+//        }
+//
+//        override def close(errorOrNull: Throwable): Unit = {
+//
+//        }
+//      }).outputMode("append") // append , update ,complete
+//      .format("console")
+//      .start()
 
-    val query = wordCounts.writeStream
-      .outputMode("append") // append , update ,complete
-      .format("console")
-      .start()
+
+//     Generate running word count
+        val wordCounts = words.withWatermark("time", "2 minutes").groupBy(window($"time", "2 minutes", "1 minutes")).count()
+
+        val query = wordCounts.writeStream.foreach(new ForeachWriter[Row]{
+          override def open(partitionId: Long, epochId: Long): Boolean = {
+            true
+          }
+
+          override def process(value: Row): Unit = {
+            println(value.get(0) +  " : " + value.get(1))
+          }
+
+          override def close(errorOrNull: Throwable): Unit = {
+
+          }
+        })
+          .outputMode("append") // append , update ,complete
+          .start()
 
 
     query.awaitTermination()
@@ -57,22 +94,21 @@ class StructuredStreamTester extends FunSuite {
   /**
     * 读取目录，新加文件会被处理
     */
-  test("StructuredNetworkWordCount1")  {
+  test("StructuredNetworkWordCount1") {
 
     val spark = SparkSession
       .builder
       .appName("StructuredNetworkWordCount")
       .master("local[*]")
       .getOrCreate()
-    import spark.implicits._
 
     spark.sparkContext.setLogLevel("ERROR")
     val userSchema = new StructType().add("name", "string").add("age", "integer")
     val csvDF = spark
       .readStream
       .option("sep", ",")
-      .schema(userSchema)      // Specify schema of the csv files
-      .csv("data/structuredstream/")    // Equivalent to format("csv").load("/path/to/directory")
+      .schema(userSchema) // Specify schema of the csv files
+      .csv("data/structuredstream/") // Equivalent to format("csv").load("/path/to/directory")
 
     // Split the lines into words
     val words = csvDF.groupBy("name").count()
@@ -88,8 +124,7 @@ class StructuredStreamTester extends FunSuite {
   }
 
 
-
-  test("StructuredNetworkWordCount2")   {
+  test("StructuredNetworkWordCount2") {
 
     val spark = SparkSession
       .builder
