@@ -143,6 +143,12 @@
             <groupId>org.scalanlp</groupId>
             <artifactId>breeze-viz_${scala.binary.version}</artifactId>
             <version>1.0-RC4</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>breeze_2.11</artifactId>
+                    <groupId>org.scalanlp</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
@@ -212,7 +218,22 @@
                     <artifactId>log4j</artifactId>
                     <groupId>log4j</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>commons-lang3</artifactId>
+                    <groupId>org.apache.commons</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>breeze_2.11</artifactId>
+                    <groupId>org.scalanlp</groupId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>spark.ts</groupId>
+            <artifactId>spark.ts</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/sparkts-0.4.0-SNAPSHOT-jar-with-dependencies.jar</systemPath>
         </dependency>
     </dependencies>
 
@@ -285,15 +306,20 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <!--<repository>-->
+            <!--<id>maven2</id>-->
+            <!--<url>http://central.maven.org/maven2/</url>-->
+            <!--<releases>-->
+                <!--<enabled>true</enabled>-->
+            <!--</releases>-->
+            <!--<snapshots>-->
+                <!--<enabled>true</enabled>-->
+            <!--</snapshots>-->
+        <!--</repository>-->
         <repository>
-            <id>maven2</id>
-            <url>http://central.maven.org/maven2/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
     </repositories>
 </project>

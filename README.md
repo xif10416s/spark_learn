@@ -25,6 +25,44 @@
 ## 2.4.2 版本
 *   delta :
     *   spark 数据湖测试
+*   spark/ml --- demo 算法
+
+      |类名      | 算法名 |   适用场景  | 数据格式 |
+      |-|-|-|-|
+      |AFTSurvivalRegressionExample | 加速失效时间（AFT）模型 | 根据特征参数预测存活时间，如根据身体特征预测存活时间 |  1.218 （存活时间）, 1.0 （结局：1 死亡，2 缺失数据，尚存货）, Vectors.dense(1.560, -0.605) 【特征列表】|
+      |ALSExample | 最小二乘法 | 推荐系统 | userId: Int, movieId: Int, rating: Float, timestamp: Long |
+      |BinarizerExample | Binarizer | 根据阈值进行二值化,大于阈值的为1.0,小于等于阈值的为0.0 |  |
+      |BisectingKMeansExample | 二分K均值算法 | 分类，对误差平方和最大的簇进行再一次的划分 | 0 1:0.0 2:0.0 3:0.0 |
+      |BucketizerExample | 根据指定的分位点进行分桶 |   将人的体重进行离散化，将人群分为：【瘦，标准，胖】 |  |
+      |ChiSqSelectorExample | 卡方检验选择特征 |  特征选择 | 第一位是分类，后面是标签：值，要求必须是数字  |
+      |ChiSquareTestExample | 假设检验方法 | 统计样本的实际观测值与理论推断值之间的偏离程度，用于两变量间的关联分析、频属分析的拟合优度检验等 |  |
+      |CorrelationExample | TODO | 计算矩阵两两相关系数 |  |
+      |CountVectorizerExample | TODO | 算法是将文本向量转换成稀疏表示打数值向量（字符频率向量），把频率高的单词排在前面 |  |
+      |DCTExample | 离散余弦变换(Discrete Cosine Transform | 主要用于将数据或图像的压缩，能够将空域的信号转换到频域上，具有良好的去相关性的性能 |  |
+      |DecisionTreeClassificationExample | 决策树分类 | 监督学习，分类场景,目标变量为分类型数值 | 第一列分类0 or 1, 其他特征值 |
+      |DecisionTreeExample | 参数化配置，综合了分类和回归 |  |  |
+      |DecisionTreeRegressionExample | 决策树回归预测 | 目标变量为连续型变量 |  |
+      |ElementwiseProductExample | 元素智能乘积 | 每一个输入向量乘以一个给定的“权重”向量,对数据集的每一列进行缩放 |  |
+      |FeatureHasherExample | 特征哈希 | 将任意特征转换为向量或矩阵中的索引 |  |
+      |FPGrowthExample | 关联规则 | 构造一个树结构来压缩数据记录，使得挖掘频繁项集只需要扫描两次数据记录，而且该算法不需要生成候选集合 |  |
+      |GaussianMixtureExample | GMM混合高斯模型 | 7 |  |
+      |GBTExample | Gradient-Boosted Trees | 基于Stochastic Gradient Boosting(随机梯度提升)，用于分类预测 |  |
+      |GeneralizedLinearRegressionExample | 广义线性模型 | 7 |  |
+      |IndexToStringExample | 索引转文本 | 7 |  |
+      |InteractionExample | TODO | 7 |  |
+      |IsotonicRegressionExample | 保序回归算法 | TODO |  |
+      |KMeansExample | 聚类算法 | 分类预测 | 分类，特征列表 |
+      |LDAExample | Latent Dirichlet Allocation | LDA是文本语义分析中应用广泛的一个模型，比如找相似文档等应用场景 |  |
+      |LinearRegressionExample | 线性回归例子 | 根据特征预测，身高预测体重，面积预测房价 |  |
+      |LinearRegressionWithElasticNetExample | $1 | 只要数据线性相关，用LinearRegression拟合的不是很好，需要正则化，可以考虑使用岭回归(L2), 如何输入特征的维度很高,而且是稀疏线性关系的话， 岭回归就不太合适,考虑使用Lasso回归。 |  |
+      |LinearSVCExample | $1 | 7 |  |
+      |草莓 | $1 | 7 |  |
+      |草莓 | $1 | 7 |  |
+      |草莓 | $1 | 7 |  |
+      |草莓 | $1 | 7 |  |
+      |草莓 | $1 | 7 |  |
+      |草莓 | $1 | 7 |  |
+      
 *   spark/ml/ts
     *   git自定义时序模型
 *   spark/ml/mmlspark

@@ -216,8 +216,8 @@ public class TransportContext {
     // clientBootstraps 配置 省略
     long postBootstrap = System.nanoTime();
 
-    logger.info("Successfully created connection to {} after {} ms ({} ms spent in bootstraps)",
-            address, (postBootstrap - preConnect) / 1000000, (postBootstrap - preBootstrap) / 1000000);
+//    logger.info("Successfully created connection to {} after {} ms ({} ms spent in bootstraps)",
+//            address, (postBootstrap - preConnect) / 1000000, (postBootstrap - preBootstrap) / 1000000);
 
     return client;
   }

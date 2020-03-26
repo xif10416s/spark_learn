@@ -15,47 +15,54 @@
  * limitations under the License.
  */
 
-// scalastyle:off println
 package org.fxi.test.spark.ml
 
+// scalastyle:off println
+
 // $example on$
-import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}
+import org.apache.spark.ml.fpm.FPGrowth
 // $example off$
 import org.apache.spark.sql.SparkSession
 
-object CountVectorizerExample {
-  def main(args: Array[String]) {
+/**
+ * An example demonstrating FP-Growth.
+ * Run with
+ * {{{
+ * bin/run-example ml.FPGrowthExample
+ * }}}
+ */
+object FPGrowthExample {
+
+  def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder
         .master("local[*]")
-      .appName("CountVectorizerExample")
+      .appName(s"${this.getClass.getSimpleName}")
       .getOrCreate()
-
+    import spark.implicits._
+    spark.sparkContext.setLogLevel("ERROR")
     // $example on$
-    val df = spark.createDataFrame(Seq(
-      (0, Array("a", "b", "c")),
-      (1, Array("a", "b", "b", "c", "a"))
-    )).toDF("id", "words")
+    val dataset = spark.createDataset(Seq(
+      "1 2 5",
+      "1 2 3 5",
+      "1 2")
+    ).map(t => t.split(" ")).toDF("items")
 
-    // fit a CountVectorizerModel from the corpus
-    val cvModel: CountVectorizerModel = new CountVectorizer()
-      .setInputCol("words")
-      .setOutputCol("features")
-      .setVocabSize(3)
-      .setMinDF(2)
-      .fit(df)
+    val fpgrowth = new FPGrowth().setItemsCol("items").setMinSupport(0.5).setMinConfidence(0.6)
+    val model = fpgrowth.fit(dataset)
 
-    // alternatively, define CountVectorizerModel with a-priori vocabulary
-    val cvm = new CountVectorizerModel(Array("a", "b", "c"))
-      .setInputCol("words")
-      .setOutputCol("features")
+    // Display frequent itemsets.
+    model.freqItemsets.show()
 
-    cvModel.transform(df).show(false)
+    // Display generated association rules.
+    model.associationRules.show()
+
+    // transform examines the input items against all the association rules and summarize the
+    // consequents as prediction
+    model.transform(dataset).show()
     // $example off$
 
     spark.stop()
   }
 }
 // scalastyle:on println
-
-

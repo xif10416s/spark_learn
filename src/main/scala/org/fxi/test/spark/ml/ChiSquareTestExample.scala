@@ -19,43 +19,46 @@
 package org.fxi.test.spark.ml
 
 // $example on$
-import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}
+import org.apache.spark.ml.linalg.{Vector, Vectors}
+import org.apache.spark.ml.stat.ChiSquareTest
 // $example off$
 import org.apache.spark.sql.SparkSession
 
-object CountVectorizerExample {
-  def main(args: Array[String]) {
+/**
+ * An example for Chi-square hypothesis testing.
+ * Run with
+ * {{{
+ * bin/run-example ml.ChiSquareTestExample
+ * }}}
+  * 假设检验方法
+ */
+object ChiSquareTestExample {
+
+  def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder
-        .master("local[*]")
-      .appName("CountVectorizerExample")
+      .appName("ChiSquareTestExample")
       .getOrCreate()
+    import spark.implicits._
 
     // $example on$
-    val df = spark.createDataFrame(Seq(
-      (0, Array("a", "b", "c")),
-      (1, Array("a", "b", "b", "c", "a"))
-    )).toDF("id", "words")
+    val data = Seq(
+      (0.0, Vectors.dense(0.5, 10.0)),
+      (0.0, Vectors.dense(1.5, 20.0)),
+      (1.0, Vectors.dense(1.5, 30.0)),
+      (0.0, Vectors.dense(3.5, 30.0)),
+      (0.0, Vectors.dense(3.5, 40.0)),
+      (1.0, Vectors.dense(3.5, 40.0))
+    )
 
-    // fit a CountVectorizerModel from the corpus
-    val cvModel: CountVectorizerModel = new CountVectorizer()
-      .setInputCol("words")
-      .setOutputCol("features")
-      .setVocabSize(3)
-      .setMinDF(2)
-      .fit(df)
-
-    // alternatively, define CountVectorizerModel with a-priori vocabulary
-    val cvm = new CountVectorizerModel(Array("a", "b", "c"))
-      .setInputCol("words")
-      .setOutputCol("features")
-
-    cvModel.transform(df).show(false)
+    val df = data.toDF("label", "features")
+    val chi = ChiSquareTest.test(df, "features", "label").head
+    println(s"pValues = ${chi.getAs[Vector](0)}")
+    println(s"degreesOfFreedom ${chi.getSeq[Int](1).mkString("[", ",", "]")}")
+    println(s"statistics ${chi.getAs[Vector](2)}")
     // $example off$
 
     spark.stop()
   }
 }
 // scalastyle:on println
-
-

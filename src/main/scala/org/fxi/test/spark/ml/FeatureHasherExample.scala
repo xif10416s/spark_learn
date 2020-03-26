@@ -15,47 +15,36 @@
  * limitations under the License.
  */
 
-// scalastyle:off println
 package org.fxi.test.spark.ml
 
 // $example on$
-import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}
+import org.apache.spark.ml.feature.FeatureHasher
 // $example off$
 import org.apache.spark.sql.SparkSession
 
-object CountVectorizerExample {
-  def main(args: Array[String]) {
+object FeatureHasherExample {
+  def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder
-        .master("local[*]")
-      .appName("CountVectorizerExample")
+      .appName("FeatureHasherExample")
       .getOrCreate()
 
     // $example on$
-    val df = spark.createDataFrame(Seq(
-      (0, Array("a", "b", "c")),
-      (1, Array("a", "b", "b", "c", "a"))
-    )).toDF("id", "words")
+    val dataset = spark.createDataFrame(Seq(
+      (2.2, true, "1", "foo"),
+      (3.3, false, "2", "bar"),
+      (4.4, false, "3", "baz"),
+      (5.5, false, "4", "foo")
+    )).toDF("real", "bool", "stringNum", "string")
 
-    // fit a CountVectorizerModel from the corpus
-    val cvModel: CountVectorizerModel = new CountVectorizer()
-      .setInputCol("words")
-      .setOutputCol("features")
-      .setVocabSize(3)
-      .setMinDF(2)
-      .fit(df)
-
-    // alternatively, define CountVectorizerModel with a-priori vocabulary
-    val cvm = new CountVectorizerModel(Array("a", "b", "c"))
-      .setInputCol("words")
+    val hasher = new FeatureHasher()
+      .setInputCols("real", "bool", "stringNum", "string")
       .setOutputCol("features")
 
-    cvModel.transform(df).show(false)
+    val featurized = hasher.transform(dataset)
+    featurized.show(false)
     // $example off$
 
     spark.stop()
   }
 }
-// scalastyle:on println
-
-

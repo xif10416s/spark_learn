@@ -19,43 +19,43 @@
 package org.fxi.test.spark.ml
 
 // $example on$
-import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}
+import org.apache.spark.ml.linalg.{Vector, Vectors}
+import org.apache.spark.ml.stat.Summarizer
 // $example off$
 import org.apache.spark.sql.SparkSession
 
-object CountVectorizerExample {
-  def main(args: Array[String]) {
+object SummarizerExample {
+  def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder
-        .master("local[*]")
-      .appName("CountVectorizerExample")
+      .appName("SummarizerExample")
       .getOrCreate()
 
+    import Summarizer._
+    import spark.implicits._
+
     // $example on$
-    val df = spark.createDataFrame(Seq(
-      (0, Array("a", "b", "c")),
-      (1, Array("a", "b", "b", "c", "a"))
-    )).toDF("id", "words")
+    val data = Seq(
+      (Vectors.dense(2.0, 3.0, 5.0), 1.0),
+      (Vectors.dense(4.0, 6.0, 7.0), 2.0)
+    )
 
-    // fit a CountVectorizerModel from the corpus
-    val cvModel: CountVectorizerModel = new CountVectorizer()
-      .setInputCol("words")
-      .setOutputCol("features")
-      .setVocabSize(3)
-      .setMinDF(2)
-      .fit(df)
+    val df = data.toDF("features", "weight")
 
-    // alternatively, define CountVectorizerModel with a-priori vocabulary
-    val cvm = new CountVectorizerModel(Array("a", "b", "c"))
-      .setInputCol("words")
-      .setOutputCol("features")
+    val (meanVal, varianceVal) = df.select(metrics("mean", "variance")
+      .summary($"features", $"weight").as("summary"))
+      .select("summary.mean", "summary.variance")
+      .as[(Vector, Vector)].first()
 
-    cvModel.transform(df).show(false)
+    println(s"with weight: mean = ${meanVal}, variance = ${varianceVal}")
+
+    val (meanVal2, varianceVal2) = df.select(mean($"features"), variance($"features"))
+      .as[(Vector, Vector)].first()
+
+    println(s"without weight: mean = ${meanVal2}, sum = ${varianceVal2}")
     // $example off$
 
     spark.stop()
   }
 }
 // scalastyle:on println
-
-

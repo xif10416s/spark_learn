@@ -169,8 +169,8 @@ public class TransportResponseHandler extends MessageHandler<ResponseMessage> {
       ChunkFetchFailure resp = (ChunkFetchFailure) message;
       ChunkReceivedCallback listener = outstandingFetches.get(resp.streamChunkId);
       if (listener == null) {
-        logger.warn("Ignoring response for block {} from {} ({}) since it is not outstanding",
-          resp.streamChunkId, getRemoteAddress(channel), resp.errorString);
+//        logger.warn("Ignoring response for block {} from {} ({}) since it is not outstanding",
+//          resp.streamChunkId, getRemoteAddress(channel), resp.errorString);
       } else {
         outstandingFetches.remove(resp.streamChunkId);
         listener.onFailure(resp.streamChunkId.chunkIndex, new ChunkFetchFailureException(
@@ -180,8 +180,8 @@ public class TransportResponseHandler extends MessageHandler<ResponseMessage> {
       RpcResponse resp = (RpcResponse) message;
       RpcResponseCallback listener = outstandingRpcs.get(resp.requestId);
       if (listener == null) {
-        logger.warn("Ignoring response for RPC {} from {} ({} bytes) since it is not outstanding",
-          resp.requestId, getRemoteAddress(channel), resp.body().size());
+//        logger.warn("Ignoring response for RPC {} from {} ({} bytes) since it is not outstanding",
+//          resp.requestId, getRemoteAddress(channel), resp.body().size());
       } else {
         outstandingRpcs.remove(resp.requestId);
         try {
@@ -194,8 +194,8 @@ public class TransportResponseHandler extends MessageHandler<ResponseMessage> {
       RpcFailure resp = (RpcFailure) message;
       RpcResponseCallback listener = outstandingRpcs.get(resp.requestId);
       if (listener == null) {
-        logger.warn("Ignoring response for RPC {} from {} ({}) since it is not outstanding",
-          resp.requestId, getRemoteAddress(channel), resp.errorString);
+//        logger.warn("Ignoring response for RPC {} from {} ({}) since it is not outstanding",
+//          resp.requestId, getRemoteAddress(channel), resp.errorString);
       } else {
         outstandingRpcs.remove(resp.requestId);
         listener.onFailure(new RuntimeException(resp.errorString));

@@ -15,47 +15,48 @@
  * limitations under the License.
  */
 
-// scalastyle:off println
 package org.fxi.test.spark.ml
 
+// scalastyle:off println
+
 // $example on$
-import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}
+import org.apache.spark.ml.fpm.PrefixSpan
 // $example off$
 import org.apache.spark.sql.SparkSession
 
-object CountVectorizerExample {
-  def main(args: Array[String]) {
+/**
+ * An example demonstrating PrefixSpan.
+ * Run with
+ * {{{
+ * bin/run-example ml.PrefixSpanExample
+ * }}}
+ */
+object PrefixSpanExample {
+
+  def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder
-        .master("local[*]")
-      .appName("CountVectorizerExample")
+      .appName(s"${this.getClass.getSimpleName}")
       .getOrCreate()
+    import spark.implicits._
 
     // $example on$
-    val df = spark.createDataFrame(Seq(
-      (0, Array("a", "b", "c")),
-      (1, Array("a", "b", "b", "c", "a"))
-    )).toDF("id", "words")
+    val smallTestData = Seq(
+      Seq(Seq(1, 2), Seq(3)),
+      Seq(Seq(1), Seq(3, 2), Seq(1, 2)),
+      Seq(Seq(1, 2), Seq(5)),
+      Seq(Seq(6)))
 
-    // fit a CountVectorizerModel from the corpus
-    val cvModel: CountVectorizerModel = new CountVectorizer()
-      .setInputCol("words")
-      .setOutputCol("features")
-      .setVocabSize(3)
-      .setMinDF(2)
-      .fit(df)
-
-    // alternatively, define CountVectorizerModel with a-priori vocabulary
-    val cvm = new CountVectorizerModel(Array("a", "b", "c"))
-      .setInputCol("words")
-      .setOutputCol("features")
-
-    cvModel.transform(df).show(false)
+    val df = smallTestData.toDF("sequence")
+    val result = new PrefixSpan()
+      .setMinSupport(0.5)
+      .setMaxPatternLength(5)
+      .setMaxLocalProjDBSize(32000000)
+      .findFrequentSequentialPatterns(df)
+      .show()
     // $example off$
 
     spark.stop()
   }
 }
 // scalastyle:on println
-
-

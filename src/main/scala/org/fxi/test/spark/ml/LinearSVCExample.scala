@@ -19,43 +19,35 @@
 package org.fxi.test.spark.ml
 
 // $example on$
-import org.apache.spark.ml.feature.{CountVectorizer, CountVectorizerModel}
+import org.apache.spark.ml.classification.LinearSVC
 // $example off$
 import org.apache.spark.sql.SparkSession
 
-object CountVectorizerExample {
-  def main(args: Array[String]) {
+object LinearSVCExample {
+
+  def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder
-        .master("local[*]")
-      .appName("CountVectorizerExample")
+      .appName("LinearSVCExample")
+      .master("local[*]")
       .getOrCreate()
 
     // $example on$
-    val df = spark.createDataFrame(Seq(
-      (0, Array("a", "b", "c")),
-      (1, Array("a", "b", "b", "c", "a"))
-    )).toDF("id", "words")
+    // Load training data
+    val training = spark.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
 
-    // fit a CountVectorizerModel from the corpus
-    val cvModel: CountVectorizerModel = new CountVectorizer()
-      .setInputCol("words")
-      .setOutputCol("features")
-      .setVocabSize(3)
-      .setMinDF(2)
-      .fit(df)
+    val lsvc = new LinearSVC()
+      .setMaxIter(10)
+      .setRegParam(0.1)
 
-    // alternatively, define CountVectorizerModel with a-priori vocabulary
-    val cvm = new CountVectorizerModel(Array("a", "b", "c"))
-      .setInputCol("words")
-      .setOutputCol("features")
+    // Fit the model
+    val lsvcModel = lsvc.fit(training)
 
-    cvModel.transform(df).show(false)
+    // Print the coefficients and intercept for linear svc
+    println(s"Coefficients: ${lsvcModel.coefficients} Intercept: ${lsvcModel.intercept}")
     // $example off$
 
     spark.stop()
   }
 }
 // scalastyle:on println
-
-
