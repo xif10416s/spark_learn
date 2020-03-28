@@ -95,4 +95,8 @@
 *   deeplearn/bigdl  深度学习bigdl库
     *   Intel开源了基于Apache Spark的分布式深度学习框架BigDL
     *   examples/lenet  基于MNIST数据集的数字识别
-    
+*   spark.stream -- spark 流处理
+    *   batch  -- DStream 微批处理方式
+        *    kakfa -- kafka对接
+             *    DirectKafkaExactOnceWordCount -- kafka直连，通过数据库实现只一次语义实现
+
