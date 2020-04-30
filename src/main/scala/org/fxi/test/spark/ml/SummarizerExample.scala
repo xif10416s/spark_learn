@@ -29,18 +29,25 @@ object SummarizerExample {
     val spark = SparkSession
       .builder
       .appName("SummarizerExample")
+      .master("local[*]")
       .getOrCreate()
 
     import Summarizer._
     import spark.implicits._
 
+    spark.sparkContext.setLogLevel("ERROR")
+
     // $example on$
     val data = Seq(
-      (Vectors.dense(2.0, 3.0, 5.0), 1.0),
-      (Vectors.dense(4.0, 6.0, 7.0), 2.0)
+      (Vectors.dense(2.0, 3.0, 11.0), 1.0),
+      (Vectors.dense(4.0, 6.0, 7.0), 2.0),
+      (Vectors.dense(-1, 6.0, 7.0), 3.0),
+      (Vectors.dense(0, 6.0, 7.0), 4.0)
     )
 
     val df = data.toDF("features", "weight")
+
+
 
     val (meanVal, varianceVal) = df.select(metrics("mean", "variance")
       .summary($"features", $"weight").as("summary"))
@@ -49,13 +56,20 @@ object SummarizerExample {
 
     println(s"with weight: mean = ${meanVal}, variance = ${varianceVal}")
 
-    val (meanVal2, varianceVal2) = df.select(mean($"features"), variance($"features"))
-      .as[(Vector, Vector)].first()
+    val (meanVal2, varianceVal2, count2) = df.select(mean($"features"), variance($"features"), max($"features"))
+      .as[(Vector, Vector,Vector)].first()
 
-    println(s"without weight: mean = ${meanVal2}, sum = ${varianceVal2}")
+
+    println(s"without weight: mean = ${meanVal2}, variance = ${varianceVal2}, count = ${count2}")
     // $example off$
 
+    println( df.select(min($"features"),max($"features"),mean($"features"),numNonZeros($"features"), variance($"features"),normL1($"features"),count($"features"))
+      .as[(Vector,Vector, Vector,Vector,Vector,Vector,Long)].first())
+
+    df.stat.approxQuantile("weight",Array(0.1,0.5,0.7),0.01).foreach(println _)
     spark.stop()
+
+    df.select().stat.approxQuantile("weight",Array(0.1,0.5,0.7),0.01)
   }
 }
 // scalastyle:on println
