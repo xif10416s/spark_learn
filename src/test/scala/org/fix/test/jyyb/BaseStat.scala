@@ -1,4 +1,6 @@
 package org.fix.test.jyyb
+import java.util.Calendar
+
 import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
@@ -103,6 +105,53 @@ object BaseStat {
 
     val bdMap = spark.sparkContext.broadcast(dateIndexMap)
 
-
+    userDateDf.createOrReplaceTempView("t")
   }
+
+  import java.util.Calendar
+  def  getBirAgeSex( certificateNo:String) : (String,Int,Int) ={
+    if(certificateNo == null || certificateNo.size == 0){
+      return (null,-1,-1)
+    }
+    var birthday = ""
+    var age = -1
+    var sexCode = -1
+    val year = Calendar.getInstance().get(Calendar.YEAR);
+    val number = certificateNo.toCharArray()
+    var flag = true;
+    if (number.length == 15) {
+      for( i<- 0 to number.length)
+      {
+        if (!flag) return (null,-1,-1)
+        flag = Character.isDigit(number(i))
+      }
+    } else if (number.length == 18) {
+      for( i<- 0 to number.length -1 )
+      {
+        if (!flag) return  (null,-1,-1)
+        flag = Character.isDigit(number(i))
+      }
+    }
+    if (flag && certificateNo.length() == 15) {
+      birthday = "19" + certificateNo.substring(6, 8) + "-" +certificateNo.substring(8, 10) + "-" +certificateNo.substring(10, 12);
+      sexCode = Integer.parseInt(certificateNo.substring(certificateNo.length() - 3, certificateNo.length())) % 2 match{
+        case 0 => 1
+        case _ => 2
+      }
+      age = (year - Integer.parseInt("19" + certificateNo.substring(6, 8))) ;
+    } else if (flag && certificateNo.length() == 18) {
+      birthday = certificateNo.substring(6, 10) + "-" +certificateNo.substring(10, 12) + "-" +certificateNo.substring(12, 14);
+      sexCode = Integer.parseInt(certificateNo.substring(certificateNo.length() - 4, certificateNo.length() - 1)) % 2   match{
+        case 0 => 1
+        case _ => 2
+      }
+      age = (year - Integer.parseInt(certificateNo.substring(6, 10)));
+    }
+
+    if(birthday == ""){
+       birthday = null
+    }
+     (birthday,age.toInt,sexCode.toInt);
+  }
+
 }
