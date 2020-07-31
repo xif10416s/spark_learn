@@ -20,7 +20,7 @@ class BaseTester extends FunSuite {
     data.write.format("delta").save("./tmp/delta-table")
     val df = spark.read.format("delta").load("./tmp/delta-table")
     df.show()
-
+    spark.sql("CREATE TABLE events USING DELTA LOCATION './tmp/delta-table'")
   }
 
   test("basic update") {
