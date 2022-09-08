@@ -17,7 +17,7 @@
         <kafka_version>0.8.2-beta</kafka_version>
         <scala.binary.version>2.11</scala.binary.version>
         <kafka_version>0.8.2-beta</kafka_version>
-        <postgresql.version>42.2.5</postgresql.version>
+        <postgresql.version>42.4.1</postgresql.version>
         <spark.delta.version>0.4.0</spark.delta.version>
         <bigdl.version>0.10.0</bigdl.version>
     </properties>
